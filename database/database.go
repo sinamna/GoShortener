@@ -1,5 +1,6 @@
 package database
 import (
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"log"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
@@ -22,6 +23,7 @@ func ConnectDb() *Database{
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Print("Connected to Database")
 	return &Database{
 		client: client,
 	}
