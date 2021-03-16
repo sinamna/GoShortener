@@ -1,7 +1,6 @@
 package database
 import (
 	"fmt"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"log"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
@@ -36,8 +35,21 @@ func ConnectDb() *Database{
 	}
 }
 
-func (db *Database) saveLink(newLink *model.NewLink) *model.Link{
-
+func (db *Database) saveLink(ctx context.Context,newLink *model.NewLink) *model.Link{
+	shortLink,err := generateHash(ctx,newLink.LongLink,db)
+	if err!=nil{
+		log.Fatal(err)
+	}
+	linkToSave :=&model.Link{
+		ShortLink:shortLink,
+		LongLink:newLink.LongLink,
+	}
+	linkCollection:=db.getChizCollection()
+	_, err = linkCollection.InsertOne(ctx, linkToSave)
+	if err!=nil{
+		log.Fatal(err)
+	}
+	return linkToSave
 }
 func generateHash(ctx context.Context,longLink string,db *Database) (string,error){
 	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(longLink)))[:6]
