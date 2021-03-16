@@ -3,21 +3,19 @@
 # https://gqlgen.com/getting-started/
 
 type Link{
-    id: ID!
     longLink: String!
     shortLink: String!
 }
 
-
 type Query {
-  todos: [Todo!]!
+  links:[Link!]!
+  getLongLink(shortLink:String!):Link
+  getShortLink(LongLink:String!):Link
 }
-
 input newLink {
   longLink: String!
-  shortLink: String!
 }
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
+    createLink(input:newLink!): Link!
 }

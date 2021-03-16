@@ -19,7 +19,7 @@ func (db *Database)getChizCollection()*mongo.Collection{
 	return db.client.Database("ChizDatabase").Collection("links")
 }
 func ConnectDb() *Database{
-	client, err := mongo.NewClient(options.Client().ApplyURI("localhost:27017"))
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,7 +59,6 @@ func (db *Database) GetAllLinks(ctx context.Context) []*model.Link{
 	}
 	defer cursor.Close(ctx)
 	var links []*model.Link
-
 	for cursor.Next(ctx) {
 		var link model.Link
 		if err = cursor.Decode(&link); err != nil {
@@ -74,7 +73,10 @@ func generateHash(ctx context.Context,longLink string,db *Database) (string,erro
 	linkCollection := db.getChizCollection()
 	var savedLink bson.M
 	if err := linkCollection.FindOne(ctx,bson.M{"shortLink":hash}).Decode(&savedLink); err!=nil{
-		return generateHash(ctx,longLink+"1",db)
+		return hash,nil
 	}
-	return hash,nil
+	return generateHash(ctx,longLink+"1",db)
+}
+func(db *Database) getLink(ctx context.Context,shortLink string,longLink string) (*model.Link,error){
+
 }
