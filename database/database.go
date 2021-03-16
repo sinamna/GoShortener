@@ -35,7 +35,7 @@ func ConnectDb() *Database{
 	}
 }
 
-func (db *Database) saveLink(ctx context.Context,newLink *model.NewLink) *model.Link{
+func (db *Database) SaveLink(ctx context.Context,newLink *model.NewLink) *model.Link{
 	shortLink,err := generateHash(ctx,newLink.LongLink,db)
 	if err!=nil{
 		log.Fatal(err)
@@ -50,6 +50,24 @@ func (db *Database) saveLink(ctx context.Context,newLink *model.NewLink) *model.
 		log.Fatal(err)
 	}
 	return linkToSave
+}
+func (db *Database) GetAllLinks(ctx context.Context) []*model.Link{
+	linkCollection:= db.getChizCollection()
+	cursor, err := linkCollection.Find(ctx, bson.M{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer cursor.Close(ctx)
+	var links []*model.Link
+
+	for cursor.Next(ctx) {
+		var link model.Link
+		if err = cursor.Decode(&link); err != nil {
+			log.Fatal(err)
+		}
+		links=append(links,&link)
+	}
+	return links
 }
 func generateHash(ctx context.Context,longLink string,db *Database) (string,error){
 	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(longLink)))[:6]
