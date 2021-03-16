@@ -77,6 +77,11 @@ func generateHash(ctx context.Context,longLink string,db *Database) (string,erro
 	}
 	return generateHash(ctx,longLink+"1",db)
 }
-func(db *Database) getLink(ctx context.Context,shortLink string,longLink string) (*model.Link,error){
-
+func(db *Database) GetLink(ctx context.Context,identifier string,wantedLink string) (*model.Link,error){
+	linkCollection := db.getChizCollection()
+	var link model.Link
+	if err := linkCollection.FindOne(ctx,bson.M{identifier:wantedLink}).Decode(&link); err!=nil{
+		return nil,err
+	}
+	return &link,nil
 }
