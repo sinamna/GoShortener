@@ -2,7 +2,7 @@
 what is ChizShortener? 
 chiz shortener is a very simple url shortener implemented using GraphQL 
 ## How to use?
-ChizShortener stores links in mongodb running on localhost:27017 and the GraphQL server will be running on localhost:8080 (or you can specifiy port using env.PORT)
+ChizShortener stores links in mongodb listening on localhost:27017 and the GraphQL server will be running on localhost:8080 (or you can specifiy port using env.PORT)
 
 when you run the server it will lead you to GraphQL Playground where you can send and receive requests
 
