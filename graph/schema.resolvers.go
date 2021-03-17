@@ -8,7 +8,6 @@ import (
 	"ChizShortener/graph/generated"
 	"ChizShortener/graph/model"
 	"context"
-	"fmt"
 )
 
 func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
@@ -19,12 +18,8 @@ func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
 	return db.GetAllLinks(ctx), nil
 }
 
-func (r *queryResolver) GetLongLink(ctx context.Context, shortLink string) (*model.Link, error) {
-	return db.GetLink(ctx,"shortlink",shortLink)
-}
-
-func (r *queryResolver) GetShortLink(ctx context.Context, longLink string) (*model.Link, error) {
-	return db.GetLink(ctx,"longlink",longLink)
+func (r *queryResolver) Link(ctx context.Context, shortLink *string, longLink *string) (*model.Link, error) {
+	return db.GetLink(ctx, shortLink, longLink)
 }
 
 // Mutation returns generated.MutationResolver implementation.
@@ -42,8 +37,4 @@ type queryResolver struct{ *Resolver }
 //  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
 //    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *queryResolver) Link(ctx context.Context, shortLink *string, longLink *string) (*model.Link, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
 var db = database.ConnectDb()
