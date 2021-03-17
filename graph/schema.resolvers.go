@@ -20,11 +20,11 @@ func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
 }
 
 func (r *queryResolver) GetLongLink(ctx context.Context, shortLink string) (*model.Link, error) {
-	return db.GetLink(ctx,"shortLink",shortLink)
+	return db.GetLink(ctx,"shortlink",shortLink)
 }
 
 func (r *queryResolver) GetShortLink(ctx context.Context, longLink string) (*model.Link, error) {
-	return db.GetLink(ctx,"longLink",longLink)
+	return db.GetLink(ctx,"longlink",longLink)
 }
 
 // Mutation returns generated.MutationResolver implementation.
