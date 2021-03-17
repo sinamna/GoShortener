@@ -77,19 +77,20 @@ func generateHash(ctx context.Context,longLink string,db *Database) (string,erro
 	}
 	return generateHash(ctx,longLink+"1",db)
 }
-func(db *Database) GetLink(ctx context.Context,identifier string,wantedLink string) (*model.Link,error){
+func(db *Database) GetLink(ctx context.Context,shortLink *string,longLink *string)(*model.Link,error){
 	linkCollection := db.getChizCollection()
+	var filter bson.M
+	if shortLink!=nil{
+		filter =bson.M{
+			"shortlink":*shortLink,
+		}
+	}else if longLink!=nil{
+		filter =bson.M{
+			"longlink":*longLink,
+		}
+	}
 	var link model.Link
-	var all []model.Link
-	cursor, err := linkCollection.Find(ctx, bson.M{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err = cursor.All(ctx, &all); err != nil {
-		log.Fatal(err)
-	}
-	//fmt.Printf("%+v",all)
-	if err := linkCollection.FindOne(ctx,bson.M{identifier:wantedLink}).Decode(&link); err!=nil{
+	if err := linkCollection.FindOne(ctx,filter).Decode(&link); err!=nil{
 		return nil,err
 	}
 	return &link,nil
